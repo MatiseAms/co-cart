@@ -144,6 +144,19 @@ class WC_REST_Cart_Controller {
 				'callback' => array( $this, 'remove_item' ),
 			),
 		) );
+
+		// Create Order from cart - wc/v2/cart/create-order (POST)
+		register_rest_route( $this->namespace, '/' . $this->rest_base  . '/create-order', array(
+			'methods'  => WP_REST_Server::CREATABLE,
+			'callback' => array( $this, 'create_order' ),
+		));
+
+		// Get woocommerce payment methods - wc/v2/cart/payment-gateways (GET)
+		register_rest_route( $this->namespace, '/' . $this->rest_base  . '/payment-gateways', array(
+			'methods'  => WP_REST_Server::READABLE,
+			'callback' => array( $this, 'get_payment_gateways' ),
+		));
+
 	} // register_routes()
 
 	/**
@@ -503,5 +516,44 @@ class WC_REST_Cart_Controller {
 
 		return $totals;
 	} // END get_totals()
+
+	/**
+	 * Create order from cart.
+	 *
+	 * @access public
+	 * @since  1.1.0
+	 * @return array
+	 */
+	public function create_order( $data = array() ) {
+		WC()->cart->get_cart();
+		$checkout = WC()->checkout();
+		$order_id = $checkout->create_order($data);
+
+		$order = wc_get_order( $order_id );
+		$order->calculate_totals();
+
+		// could be used to generate checkout fields from woocommerce
+		// $fields = $checkout->get_checkout_fields();
+
+		// not using this yet
+		// update_post_meta($order_id, '_customer_user', get_current_user_id());
+
+		// this doesnt work because of checkout nonces.. i think
+		// $result = $checkout->process_checkout();
+
+		return $messages;
+	}
+
+	/**
+	 * Get payment methods from woocommerce.
+	 *
+	 * @access public
+	 * @since  1.1.0
+	 * @return array
+	 */
+	public function get_payment_gateways() {
+		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+		return $available_gateways;
+	}
 
 } // END class
