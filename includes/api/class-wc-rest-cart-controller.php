@@ -109,6 +109,39 @@ class WC_REST_Cart_Controller {
 			)
 		) );
 
+		// Add Bundle - wc/v2/cart/add-bundle (POST)
+		register_rest_route( $this->namespace, '/' . $this->rest_base . '/add-bundle', array(
+			'methods'  => WP_REST_Server::CREATABLE,
+			'callback' => array( $this, 'add_bundle_to_cart' ),
+			'args'     => array(
+				'product_id' => array(
+					'validate_callback' => function( $param, $request, $key ) {
+						return is_numeric( $param );
+					}
+				),
+				'quantity' => array(
+					'validate_callback' => function( $param, $request, $key ) {
+						return is_numeric( $param );
+					}
+				),
+				'bundle' => array(
+					'validate_callback' => function( $param, $request, $key ) {
+						return is_array( $param );
+					}
+				),
+				'variation' => array(
+					'validate_callback' => function( $param, $request, $key ) {
+						return is_array( $param );
+					}
+				),
+				'cart_item_data' => array(
+					'validate_callback' => function( $param, $request, $key ) {
+						return is_array( $param );
+					}
+				)
+			)
+		) );
+
 		// Calculate Cart Total - wc/v2/cart/calculate (POST)
 		register_rest_route( $this->namespace, '/' . $this->rest_base  . '/calculate', array(
 			'methods'  => WP_REST_Server::CREATABLE,
@@ -397,6 +430,47 @@ class WC_REST_Cart_Controller {
 		} else {
 			return new WP_Error( 'wc_cart_rest_cannot_add_to_cart', sprintf( __( 'You cannot add "%s" to your cart.', 'cart-rest-api-for-woocommerce' ), $product_data->get_name() ), array( 'status' => 500 ) );
 		}
+	} // END add_to_cart()
+
+	/**
+	 * Add bundle to Cart.
+	 *
+	 * @access public
+	 * @since  1.0.0
+	 * @param  array $data
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function add_bundle_to_cart( $data = array() ) {
+
+		$product_id     = ! isset( $data['product_id'] ) ? 0 : absint( $data['product_id'] );
+		$quantity       = ! isset( $data['quantity'] ) ? 1 : absint( $data['quantity'] );
+		$bundle         = ! isset( $data['bundle'] ) ? array() : $data['bundle'];
+		$variation      = ! isset( $data['variation'] ) ? array() : $data['variation'];
+		$cart_item_data = ! isset( $data['cart_item_data'] ) ? array() : $data['cart_item_data'];
+
+		wc_clear_notices();
+
+		foreach ($bundle as $bundle_key => $bundle_item) {
+			if(isset($bundle_item['addons'])){
+				foreach ($bundle_item['addons'] as $addon_key => $addon) {
+					if(isset($addon['name']) && isset($addon['value'])){
+						$_POST['addon-'.$bundle_key.'-'.$addon['name']] = $addon['value'];
+					}
+				}
+			}
+		}
+
+		$added = WC_PB()->cart->add_bundle_to_cart( $product_id, $quantity, $bundle, $cart_item_data );
+
+		if(is_wp_error($added)){
+			return new WP_REST_Response( $added, 500 );
+		} else {
+			return new WP_REST_Response( array(
+				'added' => $added
+			), 200 );
+		}
+
+
 	} // END add_to_cart()
 
 	/**
