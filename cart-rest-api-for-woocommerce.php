@@ -5,14 +5,12 @@
  * Description: A REST-API for WooCommerce that enables the ability to add, view, update and delete items from the cart.
  * Author:      Sébastien Dumont
  * Author URI:  https://sebastiendumont.com
- * Version:     1.1.1
+ * Version:     1.1.2
  * Text Domain: cart-rest-api-for-woocommerce
  * Domain Path: /languages/
  *
- * Requires at least: 4.9.8
- * Tested up to: 5.1.1
  * WC requires at least: 3.0.0
- * WC tested up to: 3.6.2
+ * WC tested up to: 3.6.3
  *
  * Copyright: © 2019 Sébastien Dumont, (mailme@sebastiendumont.com)
  *
@@ -39,7 +37,7 @@ if ( ! class_exists( 'WC_Cart_Endpoint_REST_API' ) ) {
 		 * @static
 		 * @since  1.0.0
 		 */
-		public static $version = '1.1.1';
+		public static $version = '1.1.2';
 
 		/**
 		 * Required WooCommerce Version
@@ -139,12 +137,13 @@ if ( ! class_exists( 'WC_Cart_Endpoint_REST_API' ) ) {
 		/**
 		 * Display a warning message if minimum version of WooCommerce check fails.
 		 *
-		 * @access public
-		 * @since  1.0.0
-		 * @return void
+		 * @access  public
+		 * @since   1.0.0
+		 * @version 1.1.2
+		 * @return  void
 		 */
 		public function admin_notice() {
-			echo '<div class="error"><p>' . sprintf( __( '%1$s requires at least %2$s v%3$s or higher.', 'cart-rest-api-for-woocommerce' ), 'Cart REST API for WooCommerce', 'WooCommerce', self::$required_woo ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>' . sprintf( __( '%1$s requires at least %2$s v%3$s or higher.', 'cart-rest-api-for-woocommerce' ), esc_html__( 'CoCart', 'cart-rest-api-for-woocommerce' ), esc_html__( 'WooCommerce', 'cart-rest-api-for-woocommerce' ), self::$required_woo ) . '</p></div>';
 		} // END admin_notice()
 
 		/**

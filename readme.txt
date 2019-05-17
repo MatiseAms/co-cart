@@ -6,10 +6,10 @@ Tags: woocommerce, cart, endpoint, JSON, rest, api, rest-api
 Donate link: https://sebdumont.xyz/donate/
 Requires at least: 4.9.8
 Requires PHP: 5.6
-Tested up to: 5.1.1
-Stable tag: 1.1.1
+Tested up to: 5.2
+Stable tag: 1.1.2
 WC requires at least: 3.0.0
-WC tested up to: 3.6.2
+WC tested up to: 3.6.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -35,9 +35,15 @@ Enjoy!
 > Want to control more? _I bet you do._
 >
 > - Add and Remove Coupons to Cart<br />
+> - Get Applied Coupons<br />
+> - Get Coupon Discount Total<br />
+> - Get Cart Total Weight<br />
+> - Get Cross Sales<br />
 > - Get and Set Shipping Methods<br />
+> - Get and Set Tax Fees<br />
 > - Calculate Shipping Fees<br />
 > - Calculate Totals and Fees<br />
+> - Calculate Total and Shipping Tax Fees<br />
 > - Support via Slack<br />
 > - and possibly more features and add-ons to follow.<br />
 >
@@ -70,29 +76,40 @@ Automatic updates should work like a charm; as always though, ensure you backup 
 == Frequently Asked Questions ==
 
 = How do I access the cart endpoints? =
+
 All can be explained via the API [documentation](https://co-cart.github.io/co-cart-docs/).
 
 = Does it work with any of the official WooCommerce libraries? =
+
 I'm afraid not. This is because the libraries require authentication which the cart does not require.
 
 = Can I view any customers cart? =
+
 No. Only the one in session, just as you would view the cart via the site.
 
 = Where can I report bugs or contribute to the project? =
+
 Bugs can be reported either in the community support forum or preferably on the [CoCart GitHub repository](https://github.com/co-cart/co-cart/issues).
 
 = Where can I ask for help? =
+
 Please reach out via the official [support forum on WordPress.org](https://wordpress.org/support/plugin/cart-rest-api-for-woocommerce/).
 
 == Screenshots ==
+
 1. Empty Cart
 2. Viewing the carts content without product thumbnail.
 3. Viewing the carts content with product thumbnail.
 
 == Upgrade Notice ==
+
 See changelog for list of changes.
 
 == Changelog ==
+
+= v1.1.2 - 17th May, 2019 =
+
+* Tweaked: Allow removing of items via update logic if quantity is zero. Thanks to [@SHoogland](https://github.com/SHoogland)
 
 = v1.1.1 - 25th April, 2019 =
 
