@@ -5,7 +5,7 @@
  * Description: A REST-API for WooCommerce that enables the ability to add, view, update and delete items from the cart.
  * Author:      Sébastien Dumont
  * Author URI:  https://sebastiendumont.com
- * Version:     1.1.2
+ * Version:     99.9.9
  * Text Domain: cart-rest-api-for-woocommerce
  * Domain Path: /languages/
  *
