@@ -418,6 +418,13 @@ class WC_REST_Cart_Controller {
 		// Add item to cart.
 		$item_key = WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation, $cart_item_data );
 
+		//Nasty fix to add country to cart
+		if (strtolower(WC()->customer->get_billing_country()) !== strtolower($data['country'])) {
+			WC()->customer->set_billing_country( $data['country']);
+			WC()->customer->set_shipping_country( $data['country']);
+			WC()->customer->save();
+		}
+		
 		// Return response to added item to cart or return error.
 		if ( $item_key ) {
 			$data = WC()->cart->get_cart_item( $item_key );
