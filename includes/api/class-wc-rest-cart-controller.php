@@ -177,8 +177,8 @@ class WC_REST_Cart_Controller {
 				'callback' => array( $this, 'remove_item' ),
 			),
 		) );
-		
-		register_rest_route( $this->namespace, '/' . $this->rest_base . '/coupon', array( 
+
+		register_rest_route( $this->namespace, '/' . $this->rest_base . '/coupon', array(
 			'args' => array(
 				'coupon' => array(
 					'type'        => 'string',
@@ -324,9 +324,9 @@ class WC_REST_Cart_Controller {
 	} // END validate_product()
 
 	/**
-	 * Checks if the product in the cart has enough stock 
+	 * Checks if the product in the cart has enough stock
 	 * before updating the quantity.
-	 * 
+	 *
 	 * @access protected
 	 * @since  1.0.6
 	 * @param  array  $current_data
@@ -424,7 +424,7 @@ class WC_REST_Cart_Controller {
 			WC()->customer->set_shipping_country( $data['country']);
 			WC()->customer->save();
 		}
-		
+
 		// Return response to added item to cart or return error.
 		if ( $item_key ) {
 			$data = WC()->cart->get_cart_item( $item_key );
@@ -606,10 +606,22 @@ class WC_REST_Cart_Controller {
 	 */
 	public function get_totals() {
 		$totals = WC()->cart->get_totals();
-
+		$appliedCoupons = WC()->cart->applied_coupons;
+		if(!empty($appliedCoupons)){
+			$totals['coupons'] = [];
+			foreach ($appliedCoupons as $coupon){
+				$c = new WC_Coupon($coupon);
+				array_push($totals['coupons'], [
+					'code' => $c->get_code(),
+					'amount' => $c->get_amount(),
+					'discountType' => $c->get_discount_type(),
+					'description' => $c->get_description()
+				]);
+			}
+		}
 		return $totals;
 	} // END get_totals()
-	
+
 	/**
 	 * Apply coupon to cart
 	 *
@@ -618,10 +630,10 @@ class WC_REST_Cart_Controller {
 	 * @param  array $data
 	 * @return boolean
 	 */
-	public function apply_coupon( $data = array() ) { 
+	public function apply_coupon( $data = array() ) {
 		return WC()->cart->apply_coupon($data['coupon']);
 	}
-	
+
 	/**
 	 * Remove existing coupon from cart
 	 *
@@ -630,7 +642,7 @@ class WC_REST_Cart_Controller {
 	 * @param  array $data
 	 * @return boolean
 	 */
-	public function remove_coupon( $data = array() ) { 
+	public function remove_coupon( $data = array() ) {
 		return WC()->cart->remove_coupon($data['coupon']);
 	}
 
