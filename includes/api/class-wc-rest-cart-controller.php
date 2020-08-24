@@ -46,6 +46,7 @@ class WC_REST_Cart_Controller {
 		register_rest_route( $this->namespace, '/' . $this->rest_base, array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => array( $this, 'get_cart' ),
+			'permission_callback' => '__return_true',
 			'args'     => array(
 				'thumb' => array(
 					'default' => null
@@ -57,6 +58,7 @@ class WC_REST_Cart_Controller {
 		register_rest_route( $this->namespace, '/' . $this->rest_base  . '/count-items', array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => array( $this, 'get_cart_contents_count' ),
+			'permission_callback' => '__return_true',
 			'args'     => array(
 				'return' => array(
 					'default' => 'numeric'
@@ -68,18 +70,21 @@ class WC_REST_Cart_Controller {
 		register_rest_route( $this->namespace, '/' . $this->rest_base  . '/totals', array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => array( $this, 'get_totals' ),
+			'permission_callback' => '__return_true',
 		));
 
 		// View Cart - wc/v2/cart/clear (POST)
 		register_rest_route( $this->namespace, '/' . $this->rest_base  . '/clear', array(
 			'methods'  => WP_REST_Server::CREATABLE,
 			'callback' => array( $this, 'clear_cart' ),
+			'permission_callback' => '__return_true',
 		));
 
 		// Add Item - wc/v2/cart/add (POST)
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/add', array(
 			'methods'  => WP_REST_Server::CREATABLE,
 			'callback' => array( $this, 'add_to_cart' ),
+			'permission_callback' => '__return_true',
 			'args'     => array(
 				'product_id' => array(
 					'validate_callback' => function( $param, $request, $key ) {
@@ -113,6 +118,7 @@ class WC_REST_Cart_Controller {
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/add-bundle', array(
 			'methods'  => WP_REST_Server::CREATABLE,
 			'callback' => array( $this, 'add_bundle_to_cart' ),
+			'permission_callback' => '__return_true',
 			'args'     => array(
 				'product_id' => array(
 					'validate_callback' => function( $param, $request, $key ) {
@@ -146,6 +152,7 @@ class WC_REST_Cart_Controller {
 		register_rest_route( $this->namespace, '/' . $this->rest_base  . '/calculate', array(
 			'methods'  => WP_REST_Server::CREATABLE,
 			'callback' => array( $this, 'calculate_totals' ),
+			'permission_callback' => '__return_true',
 		));
 
 		// Update, Remove or Restore Item - wc/v2/cart/cart-item (GET, POST, DELETE)
@@ -159,10 +166,12 @@ class WC_REST_Cart_Controller {
 			array(
 				'methods'  => WP_REST_Server::READABLE,
 				'callback' => array( $this, 'restore_item' ),
+				'permission_callback' => '__return_true',
 			),
 			array(
 				'methods'  => WP_REST_Server::CREATABLE,
 				'callback' => array( $this, 'update_item' ),
+				'permission_callback' => '__return_true',
 				'args'     => array(
 					'quantity' => array(
 						'default' => 1,
@@ -175,8 +184,9 @@ class WC_REST_Cart_Controller {
 			array(
 				'methods'  => WP_REST_Server::DELETABLE,
 				'callback' => array( $this, 'remove_item' ),
+				'permission_callback' => '__return_true',
 			),
-		) );
+		));
 
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/coupon', array(
 			'args' => array(
@@ -189,14 +199,15 @@ class WC_REST_Cart_Controller {
 			),
 			array(
 				'methods'  => WP_REST_Server::CREATABLE,
-				'callback' => array( $this, 'apply_coupon' )
+				'callback' => array( $this, 'apply_coupon' ),
+				'permission_callback' => '__return_true',
 			),
 			array(
 				'methods'  => WP_REST_Server::DELETABLE,
-				'callback' => array( $this, 'remove_coupon' )
+				'callback' => array( $this, 'remove_coupon' ),
+				'permission_callback' => '__return_true',
 			)
-			)
-		);
+		));
 	} // register_routes()
 
 	/**
@@ -606,7 +617,7 @@ class WC_REST_Cart_Controller {
 	 */
 	public function get_totals() {
 		$totals = WC()->cart->get_totals();
-		$appliedCoupons = WC()->cart->applied_coupons;
+		$appliedCoupons = WC()->cart->get_applied_coupons();
 		if(!empty($appliedCoupons)){
 			$totals['coupons'] = [];
 			foreach ($appliedCoupons as $coupon){
