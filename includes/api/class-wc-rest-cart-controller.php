@@ -186,7 +186,8 @@ class WC_REST_Cart_Controller {
 				'callback' => array( $this, 'remove_item' ),
 				'permission_callback' => '__return_true',
 			),
-		));
+
+		) );
 
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/coupon', array(
 			'args' => array(
